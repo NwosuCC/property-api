@@ -2,7 +2,7 @@
 
 ## Description
 A simple tool to manage and keep track of property. Like most web services, it consists of two major parts:
-- An Admin back-end for managing applications and rented property
+- An Admin backend for managing applications and rented property
 - A mobile API for prospective clients to interact with the app
 
 ### Setup and Configuration
@@ -20,7 +20,7 @@ A simple tool to manage and keep track of property. Like most web services, it c
     ~~~
 
     The last command should have Laravel Passport equally installed for API authentication.
-    Otherwise, install it manually bu running:
+    Otherwise, install it manually by running:
     ~~~
     php artisan passport:install
     ~~~
