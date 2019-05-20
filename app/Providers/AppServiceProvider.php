@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\House;
 use App\Category;
 use App\User;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -16,6 +17,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+      Schema::defaultStringLength(191);
+
       view()->composer('*', function ($view) {
         $view->with('House', app()->make(House::class));
         $view->with('Category', app()->make(Category::class));
