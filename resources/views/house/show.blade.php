@@ -66,7 +66,7 @@
                   </tr>
                 @empty
                   <tr>
-                    <td colspan="4" class="text-center">
+                    <td colspan="5" class="text-center">
                       This property has no tenants
                     </td>
                   </tr>
