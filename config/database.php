@@ -3,9 +3,11 @@
 // Server DATABASE_URL
 $db_url = ($db_url = env('CLEARDB_DATABASE_URL')) ? parse_url( $db_url ) : null;
 
+$db_url['name'] = substr($db_url['path'], 1);
+
 $db_host = $db_url ? $db_url['host']  : env('DB_HOST', '127.0.0.1');
 $db_port = $db_url ? $db_url['port']  : env('DB_PORT', '');
-$db_name = $db_url ? $db_url['host']  : env('DB_DATABASE', 'forge');
+$db_name = $db_url ? $db_url['name']  : env('DB_DATABASE', 'forge');
 $db_user = $db_url ? $db_url['user']  : env('DB_USERNAME', 'forge');
 $db_pass = $db_url ? $db_url['pass']  : env('DB_PASSWORD', '');
 
@@ -130,15 +132,15 @@ return [
 
         'client' => 'predis',
 
-        'options' => [
-          'cluster' => env('REDIS_CLUSTER', 'predis'),
-        ],
+//        'options' => [
+//          'cluster' => env('REDIS_CLUSTER', 'predis'),
+//        ],
 
         'default' => [
             'host' => $redis_host,
             'password' => $redis_pass ?: null,
             'port' => $redis_port ?: 6379,
-            'database' => env('REDIS_redis', 0),
+            'database' => env('REDIS_DB', 0),
         ],
 
         'cache' => [
