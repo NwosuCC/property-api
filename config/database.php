@@ -1,7 +1,7 @@
 <?php
 
 // Server DATABASE_URL
-$db_url = ($db_url = env('DATABASE_URL')) ? parse_url( $db_url ) : null;
+$db_url = ($db_url = env('CLEARDB_DATABASE_URL')) ? parse_url( $db_url ) : null;
 
 $db_host = $db_url ? $db_url['host']  : env('DB_HOST', '127.0.0.1');
 $db_port = $db_url ? $db_url['port']  : env('DB_PORT', '');
