@@ -3,13 +3,11 @@
 // Server DATABASE_URL
 $db_url = ($db_url = env('CLEARDB_DATABASE_URL')) ? parse_url( $db_url ) : null;
 
-$db_url['name'] = substr($db_url['path'], 1);
-
 $db_host = $db_url ? $db_url['host']  : env('DB_HOST', '127.0.0.1');
 $db_port = $db_url ? $db_url['port']  : env('DB_PORT', '');
-$db_name = $db_url ? $db_url['name']  : env('DB_DATABASE', 'forge');
 $db_user = $db_url ? $db_url['user']  : env('DB_USERNAME', 'forge');
 $db_pass = $db_url ? $db_url['pass']  : env('DB_PASSWORD', '');
+$db_name = $db_url ? substr($db_url['path'], 1)  : env('DB_DATABASE', 'forge');
 
 
 // Server REDIS_URL
