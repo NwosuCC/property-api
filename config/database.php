@@ -1,11 +1,5 @@
 <?php
 
-$ports = [
-  'mysql' => '3306',
-  'pgsql' => '',
-  'sqlsrv' => '1433',
-];
-
 // Server DATABASE_URL
 $db_url = ($db_url = env('DATABASE_URL')) ? parse_url( $db_url ) : null;
 
