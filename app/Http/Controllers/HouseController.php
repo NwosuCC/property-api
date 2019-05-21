@@ -47,6 +47,12 @@ class HouseController extends Controller
 
   public function store(HouseRequest $request)
   {
+    if(auth()->user()->cant('create', House::class)) {
+      // ToDo: customize error messages class
+      set_flash('You are not authorized to perform this action', 'danger');
+      return redirect()->back();
+    }
+
     $category = Category::find( $request->input(['category']) );
 
     $house = House::instance()->fill([
@@ -55,7 +61,7 @@ class HouseController extends Controller
       'slug' => Str::slug( $request->input('title') )
     ]);
 
-    auth()->user()->createHouse( $category, $house );
+    $category->houses()->save($house);
 
     event(new HouseSaved($house));
 

@@ -87,10 +87,6 @@ class User extends Authenticatable
     $this->categories()->save($category);
   }
 
-  public function createHouse(Category $category, House $house){
-    $this->tenancies()->save( $category->addHouse($house) );
-  }
-
   public function scopeTenants($query){
     return $query->has('tenancies')->withCount(['tenancies']);
   }
