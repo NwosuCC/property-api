@@ -24,7 +24,7 @@ class House extends Model
 
   protected $dates = ['deleted_at'];
 
-  protected $appends = ['status'];
+  protected $appends = ['status', 'is_rented', 'is_expired'];
 
   protected $events = [
     'created' => HouseSaved::class,
@@ -67,10 +67,18 @@ class House extends Model
     return new HouseUrlPresenter($this, ['name_prefix' => 'house']);
   }
 
+  public function getIsRentedAttribute(){
+    return (bool) $this->tenants->count();
+  }
+
   public function getStatusAttribute(){
-    $state = $this->tenants->count() ? self::STATUS_RENTED : self::STATUS_AVAILABLE;
+    $state = $this->is_rented ? self::STATUS_RENTED : self::STATUS_AVAILABLE;
 
     return $this->states[ $state ];
+  }
+
+  public function getIsExpiredAttribute(){
+    return ($expiry_date = $this->expires_at) and $expiry_date->isPast();
   }
 
   public function getExpiresAtAttribute(){

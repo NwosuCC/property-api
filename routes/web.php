@@ -47,7 +47,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/applicants', 'ApplicantController@index')->name('index');
     Route::get('/applicants/{user}', 'ApplicantController@show')->name('show');
-//    Route::get('/applicants/{user}/edit', 'ApplicantController@edit')->name('edit');
     Route::put('/applicants/{user}', 'ApplicantController@update')->name('update');
 
   });
@@ -67,6 +66,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/houses/applications', 'HouseController@applied')->name('applied');
     Route::put('/houses/assign/{user}/{house}', 'HouseController@assign')->name('assign');
+    Route::put('/houses/relieve/{user}/{house}', 'HouseController@relieve')->name('relieve');
 
     Route::get('/houses/occupied', 'HouseController@rented')->name('rented');
 

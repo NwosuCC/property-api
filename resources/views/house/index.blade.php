@@ -71,7 +71,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($houses as $i => $house)
+                @forelse($houses as $i => $house)
                   <tr>
                     <td>{{ $i + 1 }}</td>
                     <td>{{ $house->title  }}</td>
@@ -79,14 +79,16 @@
                     <td>{{ $house->status }}</td>
                     <td>{{ $house->users_count }}</td>
                     <td class="px-0 text-center">
-                      <small class="d-inline-block">
-                        <a class="nav-link p-0" href="{{ $house->route->show }}">
-                          {{ __('View >>') }}
-                        </a>
-                      </small>
+                      @include('snippets.actions.view', ['url' => $house->route->show])
                     </td>
                   </tr>
-                @endforeach
+                @empty
+                  <tr>
+                    <td colspan="6" class="text-center">
+                      There are currently no property here
+                    </td>
+                  </tr>
+                @endforelse
                 </tbody>
               </table>
             </div>

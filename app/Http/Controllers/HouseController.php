@@ -8,7 +8,6 @@ use App\Category;
 use App\Events\HouseSaved;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Str;
 use App\Http\Requests\HouseRequest;
 
 /*============================
@@ -16,20 +15,43 @@ use App\Http\Requests\HouseRequest;
  *------------------------*/
 class HouseController extends Controller
 {
+
   public function index(Category $category = null)
   {
     $houses = House::latest()->in($category)->count()->get();
 
     $categories = Category::latest()->get();
 
-    return view('house.index', compact('houses', 'categories', 'category'));
+    return view(
+      'house.index', compact('houses', 'categories', 'category')
+    );
   }
 
 
-  public function create() {
+  public function create()
+  {
     $categories = Category::latest()->get();
 
     return view('house.create', compact('categories'));
+  }
+
+
+  public function store(HouseRequest $request)
+  {
+    if($this->userCant('create', House::class)){
+      return redirect()->back();
+    }
+
+    /** @var Category $category */
+    $category = Category::find( $request->{'category'});
+
+    $house = $category->addHouse($request, $house = House::instance());
+
+    event(new HouseSaved($house));
+
+    set_flash('New house saved');
+
+    return redirect()->route('house.index');
   }
 
 
@@ -45,42 +67,15 @@ class HouseController extends Controller
   }
 
 
-  public function store(HouseRequest $request)
+  public function edit(House $house)
   {
-    if(auth()->user()->cant('create', House::class)) {
-      // ToDo: customize error messages class
-      set_flash('You are not authorized to perform this action', 'danger');
+    if($this->userCant('update', $house)){
       return redirect()->back();
     }
 
-    $category = Category::find( $request->input(['category']) );
-
-    $house = House::instance()->fill([
-      'title' => $request->input('title'),
-      'description' => $request->input('description'),
-      'slug' => Str::slug( $request->input('title') )
-    ]);
-
-    $category->houses()->save($house);
-
-    event(new HouseSaved($house));
-
-    set_flash('New house saved');
-
-    return redirect()->route('house.index');
-  }
-
-
-  public function edit(House $house) {
-    if(auth()->user()->cant('update', $house)) {
-      // ToDo: customize error messages class
-      set_flash('You are not authorized to perform this action', 'danger');
-      return redirect()->back();
-    }
-
-    $categories = Category::latest()->get();
-
-    return view('house.edit', compact('categories', 'house'));
+    return view(
+      'house.edit', ['house' => $house, 'categories' => Category::all()]
+    );
   }
 
 
@@ -88,15 +83,7 @@ class HouseController extends Controller
   {
     $this->authorize('update', $house);
 
-    $category = Category::find($request->input('category'));
-
-    $house->fill([
-      'title' => $request->input('title'),
-      'description' => $request->input('description'),
-      'slug' => Str::slug( $request->input('title') ),
-    ]);
-
-    auth()->user()->createHouse( $category, $house );
+    $house = Category::find( $request->{'category'})->addHouse($request, $house);
 
     [$message, $type] = $house->getChanges() ? ['House updated', ''] : ['No changes made', 'info'];
 
@@ -106,7 +93,8 @@ class HouseController extends Controller
   }
 
 
-  public function destroy(HouseRequest $request, House $house) {
+  public function destroy(HouseRequest $request, House $house)
+  {
     $this->authorize('delete', $house);
 
     $house->delete();
@@ -159,6 +147,18 @@ class HouseController extends Controller
     }
 
     return redirect()->back();
+  }
+
+
+  protected function userCant(string $act_on, $object)
+  {
+//    if(can($act_on, $object))
+    if($cannot = auth()->user()->cant($act_on, $object)) {
+      set_flash(
+        'You are not authorized to perform this action', 'danger'
+      );
+    }
+    return $cannot;
   }
 
 

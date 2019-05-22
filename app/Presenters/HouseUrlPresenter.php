@@ -39,4 +39,10 @@ class HouseUrlPresenter extends ModelUrlPresenter
     return $this->routeFor('assign', [$user, $this->model]);
   }
 
+
+  public function relieve(User $user)
+  {
+    return $this->routeFor('relieve', [$user, $this->model]);
+  }
+
 }

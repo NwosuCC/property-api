@@ -3,17 +3,16 @@
 @section('content')
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-md-8">
+      <div class="col-11 col-lg-8">
         <div class="card">
           <div class="card-header">
             <div class="row no-gutters pt-1">
               <div class="">
                 <h5>{{ __('Edit House')  }}</h5>
               </div>
+
               <div class="ml-auto">
-                <small class="d-inline-block px-2">
-                  <a class="nav-link p-0" href="{{ $house->route->index }}">{{ __('Home') }}</a>
-                </small>
+                @include('snippets.bread-crumb.items', ['model' => $house, 'view' => 'house.edit'])
               </div>
             </div>
           </div>

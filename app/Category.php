@@ -2,6 +2,9 @@
 
 namespace App;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
 class Category extends Model
 {
     protected $fillable = [
@@ -27,9 +30,15 @@ class Category extends Model
         return $this->hasMany(House::class)->latest();
     }
 
-    public function addHouse(House $house) {
-        $house->{'category_id'} = $this->{'id'};
-        return $house;
+    public function addHouse(Request $request, House $house)
+    {
+      $house
+        ->fill( $request->only(['title', 'description']))
+        ->setAttribute('slug', Str::slug( $house->{'title'} ));
+
+      $this->houses()->save($house);
+
+      return $house;
     }
 
 

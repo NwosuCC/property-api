@@ -2,9 +2,22 @@
 
 use App\Model;
 use Illuminate\Support\Str;
-use Illuminate\Support\MessageBag;
-use Illuminate\Support\ViewErrorBag;
 
+
+if (! function_exists('can')) {
+  /**
+   * Indicates if an agent is authorized for an action
+   * Used especially in views
+   *
+   * @param   string $act_on        The action to authorize
+   * @param   string|Model $object  The model to modify
+   * @return  string
+   */
+  function can(string $act_on, $object)
+  {
+    return auth()->user()->can($act_on, $object);
+  }
+}
 
 if (! function_exists('errors_json')) {
   /**
@@ -34,18 +47,6 @@ if (! function_exists('errors_json')) {
     }
 
     return json_encode($errorBag);
-  }
-}
-
-if (! function_exists('date_str')) {
-  /**
-   * Returns app-wide format for displaying Dates
-   *
-   * @return  string
-   */
-  function date_str()
-  {
-    return 'D, M j, Y';
   }
 }
 

@@ -19,15 +19,7 @@
               </div>
 
               <div class="ml-auto">
-                @include('snippets.breadcurms', ['url_home' => $house->route->index])
-
-                @can('update', $house)
-                <small class="d-inline-block pl-2 border-left">
-                  <a class="nav-link d-inline-block p-0" href="{{ $house->route->edit }}">
-                    {{ __('Edit House') }}
-                  </a>
-                </small>
-                @endcan
+                @include('snippets.bread-crumb.items', ['model' => $house, 'view' => 'house.show'])
               </div>
             </div>
           </div>
@@ -55,13 +47,10 @@
                     <td>{{ $tenant->name  }}</td>
                     <td>{{ $tenant->email  }}</td>
                     <td>
-                      {{-- Snippet --}}
                       @include('snippets.expiry-status', $house)
                     </td>
                     <td class="px-0 text-center">
-                      <a class="nav-link p-0" href="{{ $tenant->route->tenant->show }}">
-                        {{ __('View >>') }}
-                      </a>
+                      @include('snippets.actions.view', ['url' => $tenant->route->tenant->show])
                     </td>
                   </tr>
                 @empty
@@ -98,9 +87,7 @@
                     <td>{{ $applicant->name  }}</td>
                     <td>{{ $applicant->email  }}</td>
                     <td class="px-0 text-center">
-                      <a class="nav-link p-0" href="{{ $applicant->route->applicant->show }}">
-                        {{ __('View >>') }}
-                      </a>
+                      @include('snippets.actions.view', ['url' => $applicant->route->applicant->show])
                     </td>
                   </tr>
                 @empty
