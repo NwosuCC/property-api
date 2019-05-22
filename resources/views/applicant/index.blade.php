@@ -33,9 +33,7 @@
                                         <td>{{ $applicant->email  }}</td>
                                         <td>{{ $applicant->applications_count }}</td>
                                         <td class="px-0 text-center">
-                                          <a class="nav-link p-0" href="{{ $applicant->route->applicant->show }}">
-                                            {{ __('View >>') }}
-                                          </a>
+                                          @include('snippets.actions.view', ['url' => $applicant->route->applicant->show])
                                         </td>
                                     </tr>
                                 @endforeach

@@ -4,13 +4,13 @@
     <button class="fa fa-times mx-1 py-0 px-2 btn btn-light" style="color: red;"
             onclick="MFA.relieve({{$house->getAssignParams($user)}})">
     </button>
-    <a class="nav-link py-0 px-2 d-inline-block btn btn-sm btn-link" href="{{ $house->route->show }}">
-      View
-    </a>
   @else
     <button class="fa fa-times mx-1 py-0 px-2 btn btn-light" style="color: lightgrey;"></button>
-    <a class="nav-link py-0 px-2 d-inline-block btn btn-sm btn-link" href="#" style="color: lightgrey;">View</a>
   @endif
+
+  <a class="nav-link py-0 px-2 d-inline-block btn btn-sm btn-link" href="{{ $house->route->show }}">
+    View
+  </a>
 </small>
 
 

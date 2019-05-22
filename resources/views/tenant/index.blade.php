@@ -33,9 +33,7 @@
                                         <td>{{ $tenant->email  }}</td>
                                         <td>{{ __($tenant->tenancies_count) }}</td>
                                         <td class="px-0 text-center">
-                                          <a class="nav-link p-0" href="{{ $tenant->route->tenant->show }}">
-                                            {{ __('View >>') }}
-                                          </a>
+                                          @include('snippets.actions.view', ['url' => $tenant->route->tenant->show])
                                         </td>
                                     </tr>
                                 @endforeach
