@@ -42,9 +42,11 @@ class House extends Model
   ];
 
   const ERROR_RENTED = 'House is no longer available';
+  const ERROR_NOT_EXPIRED = 'House is not yet expired';
 
   const ACTION_APPROVE = 'approve';
   const ACTION_DECLINE = 'decline';
+  const ACTION_RELEASE = 'release';
 
 
   protected static function boot() {
@@ -91,17 +93,17 @@ class House extends Model
       /** @var Carbon $expiry */
       $parts = $expiry->diffInHours() > 0 ? 2 : 1;
 
-      return $expiry->diffForHumans(null, true, false, $parts);
+      return $expiry->diffForHumans(null, true, true, $parts);
     }
 
     return null;
   }
 
   // For House Approval/Decline Modal
-  public function getAssignParams(User $user) {
+  public function getActionParams(User $user, string $action) {
     return json_encode([
-      'title' => $this->title,
-      'name' => $user->name,
+      'house' => $this->title,
+      'user' => $user->name,
       'route' => $this->route->assign($user)
     ]);
   }

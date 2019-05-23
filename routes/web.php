@@ -66,7 +66,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/houses/applications', 'HouseController@applied')->name('applied');
     Route::put('/houses/assign/{user}/{house}', 'HouseController@assign')->name('assign');
-    Route::put('/houses/relieve/{user}/{house}', 'HouseController@relieve')->name('relieve');
+    Route::put('/houses/release/{user}/{house}', 'HouseController@release')->name('release');
 
     Route::get('/houses/occupied', 'HouseController@rented')->name('rented');
 

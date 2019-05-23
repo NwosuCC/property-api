@@ -14,19 +14,7 @@
               </div>
 
               <div class="ml-auto">
-                <small class="d-inline-block px-2">
-                  <a class="nav-link p-0" href="{{ $r1 = $user->route->applicant->index }}">
-                    {{ __('Home') }}
-                  </a>
-                </small>
-
-                @if($r1 !== ($r2 = url()->previous()))
-                <small class="d-inline-block px-2 border-left">
-                  <a class="nav-link d-inline-block p-0" href="{{ $r2 }}">
-                    {{ __('Back') }}
-                  </a>
-                </small>
-                @endif
+                @include('snippets.bread-crumb.items', ['model' => $user, 'view' => 'tenant.index'])
               </div>
             </div>
           </div>
@@ -65,7 +53,7 @@
                     <td class="px-0 text-center">
                       {{-- snippet includes scripts--}}
                       @include(
-                        'snippets.actions.relieve',
+                        'snippets.actions.release',
                         [$house, 'active' => $house->is_expired, 'index' => $loop->index]
                       )
                     </td>
@@ -83,6 +71,50 @@
           </div>
         </div>
       </div>
+
+      {{-- Assign Modal --}}
+      @component('snippets.modal.index', ['id' => 'release', 'method' => 'PUT'])
+        <div class="col-12">
+          <div class="mt-3">
+            {{-- Assign Action --}}
+            <input type="hidden" name="release" id="release" />
+
+            {{-- Badge --}}
+            <div class="py-3 px-4 border-left-0 border-right-0" style="background-color: #e6f2ff; border: solid 1px #3c94dd;">
+              <div class="mt-1">
+                <table>
+                  <tbody>
+                  <tr>
+                    <td class="font-weight-bold pr-4">Tenant</td>
+                    <td>
+                      <span class="param-user"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="font-weight-bold pr-4">House</td>
+                    <td>
+                      <span class="param-house"></span>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {{-- Prompt --}}
+            <div class="mt-3 pl-1">
+              <span class="param-action"></span> this property?
+            </div>
+          </div>
+        </div>
+
+        @push('modal-buttons')
+        <button type="submit" class="btn btn-primary px-3">
+          <span class="param-action"></span>
+        </button>
+        @endpush
+      @endcomponent
+
     </div>
   </div>
 @endsection

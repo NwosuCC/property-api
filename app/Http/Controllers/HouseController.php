@@ -115,14 +115,18 @@ class HouseController extends Controller
 
   public function assign(Request $request, User $user, House $house)
   {
-    if( ! $assign_action = $request->input('assign')) {
+    $assign_action = $request->input('assign');
+    $valid_action = in_array($assign_action, [House::ACTION_APPROVE, House::ACTION_DECLINE]);
+
+    if( ! $valid_action) {
+      // ToDo: alert Admin (bugsnag)
       set_flash('Invalid Action! Please, try again', 'danger');
     }
     else if($rented = $house->tenants()->first()){
       set_flash(House::ERROR_RENTED, 'danger');
     }
 
-    if($assign_action && empty($rented)){
+    if($valid_action && empty($rented)){
       $house = $house->where('id', $house->id)->with('applicants')->first();
 
       if($assign_action === House::ACTION_APPROVE){
@@ -144,6 +148,31 @@ class HouseController extends Controller
         $user->applications()->detach($house);
         set_flash('House declined');
       }
+    }
+
+    return redirect()->back();
+  }
+
+
+  public function release(Request $request, User $user, House $house)
+  {
+    $release_action = $request->input('release');
+    $valid_action = $release_action === House::ACTION_RELEASE;
+    dd($release_action, $valid_action);
+
+    if( ! $valid_action) {
+      set_flash('Invalid Action! Please, try again', 'danger');
+    }
+    else if($not_expired = ! $house->{'is_expired'}){
+      set_flash(House::ERROR_NOT_EXPIRED, 'danger');
+    }
+
+    dd($release_action, $user->name, $house->title);
+
+    if($valid_action && empty($not_expired)){
+      // Release
+      $user->tenancies()->detach($house, compact('expires_at'));
+      set_flash('House released');
     }
 
     return redirect()->back();

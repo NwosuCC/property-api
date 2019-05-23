@@ -55,6 +55,11 @@
         ['text' => 'Applicants',      'url' => $user->route->applicant->index]
       ]; break;
     }
+    case 'tenant.index' : {
+      $items = [
+        ['text' => 'Tenants',         'url' => $user->route->tenant->index]
+      ]; break;
+    }
     default : {
       $items = [];
     }
