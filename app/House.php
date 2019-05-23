@@ -101,10 +101,21 @@ class House extends Model
 
   // For House Approval/Decline Modal
   public function getActionParams(User $user, string $action) {
+    switch (strval($action)){
+      case 'approve' :
+      case 'decline' : {
+        $route = $this->route->assign($user); break;
+      }
+      case 'release' : {
+        $route = $this->route->release($user); break;
+      }
+      default : $route = '';
+    }
+
     return json_encode([
       'house' => $this->title,
       'user' => $user->name,
-      'route' => $this->route->assign($user)
+      'route' => $route
     ]);
   }
 
