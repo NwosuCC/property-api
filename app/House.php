@@ -112,6 +112,7 @@ class House extends Model
       default : $route = '';
     }
 
+    
     return json_encode([
       'house' => $this->title,
       'user' => $user->name,
