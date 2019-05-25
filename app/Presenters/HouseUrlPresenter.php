@@ -40,9 +40,9 @@ class HouseUrlPresenter extends ModelUrlPresenter
   }
 
 
-  public function relieve(User $user)
+  public function release(User $user)
   {
-    return $this->routeFor('relieve', [$user, $this->model]);
+    return $this->routeFor('release', [$user, $this->model]);
   }
 
 }

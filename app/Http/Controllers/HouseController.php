@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\HouseAssignRequest;
 use App\User;
 use App\House;
 use App\Category;
@@ -9,6 +10,8 @@ use App\Events\HouseSaved;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Requests\HouseRequest;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 /*============================
  | A D M I N
@@ -113,29 +116,21 @@ class HouseController extends Controller
   }
 
 
-  public function assign(Request $request, User $user, House $house)
+  public function assign(HouseAssignRequest $request, User $user, House $house)
   {
-    $assign_action = $request->input('assign');
-    $valid_action = in_array($assign_action, [House::ACTION_APPROVE, House::ACTION_DECLINE]);
-
-    if( ! $valid_action) {
-      // ToDo: alert Admin (bugsnag)
-      set_flash('Invalid Action! Please, try again', 'danger');
-    }
-    else if($rented = $house->tenants()->first()){
-      set_flash(House::ERROR_RENTED, 'danger');
+    if($request->{'expires_at'}){
+      $expires_at = Carbon::parse($request->{'expires_at'});
     }
 
-    if($valid_action && empty($rented)){
-      $house = $house->where('id', $house->id)->with('applicants')->first();
+    $house = $house->where('id', $house->id)->with('tenants', 'applicants')->first();
 
-      if($assign_action === House::ACTION_APPROVE){
+    if($rented = $house->tenants->count()){
+      // For Modal Dialog
+      abort(400, House::ERROR_RENTED);
+    }
+    else {
+      if($request->{'action'} === House::ACTION_APPROVE){
         // Approve
-        // ToDo: add this to Approval Form
-//        $expires_at = $request->input('expires_at');
-        // ToDo: remove this simulation
-        $expires_at = Carbon::now()->addMonth(random_int(6, 30));
-
         $user->tenancies()->attach($house, compact('expires_at'));
         set_flash('House approved');
 
@@ -150,15 +145,18 @@ class HouseController extends Controller
       }
     }
 
-    return redirect()->back();
+    // For Modal Dialog
+    return response()->json(['message' => 'House declined'], 200);
   }
 
 
   public function release(Request $request, User $user, House $house)
   {
-    $release_action = $request->input('release');
-    $valid_action = $release_action === House::ACTION_RELEASE;
-    dd($release_action, $valid_action);
+    $action = $request->input('action');
+    $valid_action = $action === House::ACTION_RELEASE;
+
+    $relation = $user->tenancies()->wherePivot('house_id', $house->id);
+    $house = $relation->first();
 
     if( ! $valid_action) {
       set_flash('Invalid Action! Please, try again', 'danger');
@@ -167,11 +165,10 @@ class HouseController extends Controller
       set_flash(House::ERROR_NOT_EXPIRED, 'danger');
     }
 
-    dd($release_action, $user->name, $house->title);
-
     if($valid_action && empty($not_expired)){
       // Release
-      $user->tenancies()->detach($house, compact('expires_at'));
+      $relation->updateExistingPivot($house->id, ['deleted_at' => Carbon::now()]);
+      // Also works: $house->pivot->update(['deleted_at' => Carbon::now()]);
       set_flash('House released');
     }
 

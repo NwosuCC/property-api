@@ -40,7 +40,8 @@
                   @endif
                 </div>
               </div>
-
+\
+              {{-- Title --}}
               <div class="form-group row">
                 <label for="title" class="col-md-4 col-form-label text-md-right">{{ __('Title') }}</label>
 
@@ -56,6 +57,7 @@
                 </div>
               </div>
 
+              {{-- Description --}}
               <div class="form-group row">
                 <label for="description" class="col-md-4 col-form-label text-md-right">{{ __('Body') }}</label>
 

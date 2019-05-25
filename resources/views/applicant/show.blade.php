@@ -46,7 +46,7 @@
                     <td>{{ $house->category->name }}</td>
                     <td>{{ $house->status }}</td>
                     <td>
-                      @dayDatetime($house->created_at)
+                      @dayDatetime($house->pivot->created_at)
                     </td>
                     <td class="px-0 text-center">
                       {{-- snippet includes scripts--}}
@@ -72,16 +72,16 @@
         <div class="col-12">
           <div class="mt-3">
             {{-- Assign Action --}}
-            <input type="hidden" name="assign" id="assign" />
+            <input type="hidden" name="action" id="action" />
 
             {{-- Badge --}}
-            <div class="py-3 px-4 border-left-0 border-right-0" style="background-color: #e6f2ff; border: solid 1px #3c94dd;">
+            <div class="py-2 px-4 border-left-0 border-right-0" style="background-color: #e6f2ff; border: solid 1px #3c94dd;">
               <div class="mt-1">
                 <table>
                   <tbody>
                   {{-- Applicant --}}
                   <tr>
-                    <td class="font-weight-bold pr-4">Applicant</td>
+                    <td class="font-weight-bold pr-3">Applicant</td>
                     <td>
                       <span class="param-user"></span>
                     </td>
@@ -89,9 +89,26 @@
 
                   {{-- House --}}
                   <tr>
-                    <td class="font-weight-bold pr-4">House</td>
+                    <td class="font-weight-bold pr-3">House</td>
                     <td>
                       <span class="param-house"></span>
+                    </td>
+                  </tr>
+
+                  {{-- Expiry --}}
+                  <tr class="td_date">
+                    <td class="font-weight-bold pr-3">Expires</td>
+                    <td>
+                      <span class="expiry-label" onclick="TextField.show()">
+                        {{-- [ Click to edit ] --}}
+                      </span>
+                      <input type="date" name="expires_at" id="expires_at" class="expiry-field form-control form-control-sm"
+                             title="Expiry Date" onblur="TextField.hide()" style="display: none;" />
+                      <span class="invalid-feedback{{ $errors->has('expires_at') ? '' : ' d-none' }}" role="alert">
+                          <strong>{{ $errors->first('expires_at') }}</strong>
+                      </span>
+                    </td>
+                    <td class="expiry-value">
                     </td>
                   </tr>
                   </tbody>
@@ -107,11 +124,61 @@
         </div>
 
         @push('modal-buttons')
-          <button type="submit" class="btn btn-primary px-3">
+          <button type="button" class="modal-submit btn btn-primary px-3" onclick="window.MFA.submit(event)" onmouseenter="TextField.hide()">
             <span class="param-action"></span>
           </button>
         @endpush
       @endcomponent
+
+      <script>
+        const TextField = (() => {
+          let actionObj, tdTextObj, labelsObj, valuesObj;
+
+          setTimeout(() => {
+            actionObj = () => $('#action');
+            tdTextObj = () => $('.td_date');
+            labelsObj = () => $('.expiry-label');
+            valuesObj = () => $('.expiry-field');
+
+            if(typeof plugIntoModal === 'function'){
+              plugIntoModal(() => {
+                $(document)
+                  .on({
+                    mousedown: function (e) {
+                      if(e.target.id !== valuesObj().attr('id')){
+                        TextField.hide();
+                      }
+                    }
+                  })
+                  .on({
+                    'show.bs.modal': function () {
+                      TextField.setLabel() && TextField.resetText();
+                      (actionObj().val() === 'approve') ? tdTextObj().show() : tdTextObj().hide();
+                    }
+                  }, window.MFA.UI)
+                ;
+              });
+            }
+
+          }, 300);
+
+          return {
+            setLabel: () => {
+              labelsObj().text('[ Click to edit ]');
+            },
+            resetText: () => {
+              valuesObj().val('').change();
+            },
+            show: () => {
+              labelsObj().hide() && valuesObj().show();
+            },
+            hide: () => {
+              valuesObj().val() && labelsObj().text( valuesObj().val() );
+              labelsObj().show() && valuesObj().hide();
+            }
+          };
+        })();
+      </script>
 
     </div>
   </div>

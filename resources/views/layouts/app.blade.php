@@ -12,7 +12,7 @@
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     {{--@stack('actions-scripts')--}}
-    <script src="{{ asset('js/actions-scripts.js') }}" defer></script>
+    <script src="{{ asset('js/modal-scripts.js') }}" defer></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -98,7 +98,12 @@
         </div>
     </nav>
 
-    {{-- Flash Message --}}
+  <div>
+{{--    Errors: {{ json_encode($errors) }}--}}
+{{--    Flash: {{ json_encode(get_flash()) }}--}}
+  </div>
+
+  {{-- Flash Message --}}
     @if($flash = get_flash())
         <div id="flash-message" class="alert alert-{{$flash['type']?:'success'}}" role="alert" style="position: fixed; top: 3px; right:15px; min-width: 300px; border-radius: 1px;">
             {{ __($flash['message']) }}
@@ -134,7 +139,7 @@
       return tryCatch((str) => { return JSON.parse(str); }, [stringObject]);
     };
     const getErrorBag = () => {
-      let php_errors = '@if($str = errors_json($errors)) <?= $str?> @endif';
+      let php_errors = '@if(!$errors && $str = errors_json($errors)) <?= $str?> @endif';
       return php_errors ? parseToJSON(php_errors) : {};
     };
 

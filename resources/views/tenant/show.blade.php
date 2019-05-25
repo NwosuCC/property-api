@@ -77,7 +77,7 @@
         <div class="col-12">
           <div class="mt-3">
             {{-- Assign Action --}}
-            <input type="hidden" name="release" id="release" />
+            <input type="hidden" name="action" id="action" />
 
             {{-- Badge --}}
             <div class="py-3 px-4 border-left-0 border-right-0" style="background-color: #e6f2ff; border: solid 1px #3c94dd;">

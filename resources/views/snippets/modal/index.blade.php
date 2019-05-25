@@ -21,6 +21,15 @@
       </div>
 
       <form id="{{$form}}" method="POST" action="{{-- Action --}}">
+        {{-- Errors --}}
+        <div class="form-errors text-danger pt-3 px-4" style="font-size: 14px; margin-bottom: -15px;">
+          <span class="form-error dv-default px-2 d-none">
+            <a class="fa fa-circle mb-1 pr-2" style="font-size: 5px; vertical-align: middle;"></a>
+            <span class="form-error-item"></span>
+          </span>
+        </div>
+
+        {{-- Inputs --}}
         @csrf
 
         @isset($method)
@@ -48,21 +57,31 @@
 
     </div>
   </div>
+
+  {{-- Bug: Spinner collision with Modal overlay --}}
+  {{--@include('snippets.spinner.index')--}}
 </div>
 
-<script>
-  let lapse = 0, attempts = 0;
 
-  const initModal = () => {
+<script>
+  const plugIntoModal = (initCallback) => {
+    if(typeof initCallback !== 'function'){
+      console.error(`Param 'initCallback' must ba a function`);
+      return;
+    }
+
+    let lapse = 0, attempts = 0;
+
     if(window.MFA && typeof window.MFA.init !== 'undefined'){
-      window.MFA.init("{{$id}}");
+      initCallback.call();
     }
     else if(++attempts <= 5){
       // Repeat attempt 5 times, increasing the next wait time by 100
-      setTimeout(() => { initModal(); }, lapse += 100);
+      setTimeout(() => { plugIntoModal(initCallback); }, lapse += 100);
     }
   };
 
-  initModal();
-
+  plugIntoModal(() => {
+    window.MFA.init("{{$id}}");
+  });
 </script>
