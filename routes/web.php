@@ -11,7 +11,7 @@
 |
 */
 
-Route::redirect('/', '/houses');
+Route::redirect('/', '/properties');
 
 Auth::routes();
 
@@ -62,20 +62,20 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
   Route::name('house.')->group(function () {
 
-    Route::get('/houses/applications', 'HouseController@applied')->name('applied');
-    Route::put('/houses/assign/{user}/{house}', 'HouseController@assign')->name('assign');
-    Route::put('/houses/release/{user}/{house}', 'HouseController@release')->name('release');
+    Route::get('/properties/applications', 'HouseController@applied')->name('applied');
+    Route::put('/properties/assign/{user}/{house}', 'HouseController@assign')->name('assign');
+    Route::put('/properties/release/{user}/{house}', 'HouseController@release')->name('release');
 
-    Route::get('/houses/occupied', 'HouseController@rented')->name('rented');
+    Route::get('/properties/occupied', 'HouseController@rented')->name('rented');
 
-    Route::get('/houses', 'HouseController@index')->name('index');
-    Route::get('/houses/in/{category}', 'HouseController@index')->name('category');
-    Route::get('/houses/create', 'HouseController@create')->name('create');
-    Route::post('/houses', 'HouseController@store')->name('store');
-    Route::get('/houses/{house}/edit', 'HouseController@edit')->name('edit');
-    Route::get('/houses/{house}', 'HouseController@show')->name('show');
-    Route::put('/houses/{house}', 'HouseController@update')->name('update');
-    Route::delete('/houses/{house}', 'HouseController@destroy')->name('delete');
+    Route::get('/properties', 'HouseController@index')->name('index');
+    Route::get('/properties/in/{category}', 'HouseController@index')->name('category');
+    Route::get('/properties/create', 'HouseController@create')->name('create');
+    Route::post('/properties', 'HouseController@store')->name('store');
+    Route::get('/properties/{house}/edit', 'HouseController@edit')->name('edit');
+    Route::get('/properties/{house}', 'HouseController@show')->name('show');
+    Route::put('/properties/{house}', 'HouseController@update')->name('update');
+    Route::delete('/properties/{house}', 'HouseController@destroy')->name('delete');
 
   });
 
