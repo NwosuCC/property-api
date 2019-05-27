@@ -11,9 +11,7 @@
 |
 */
 
-Route::redirect('/home', '/houses');
 Route::redirect('/', '/houses');
-
 
 Auth::routes();
 
@@ -23,7 +21,7 @@ Route::get('/register', function (){
 });
 
 
-Route::namespace('Admin')->group(function () {
+Route::namespace('Auth')->group(function () {
 
   Route::get('/login', 'LoginController@showLoginForm')->name('login');
   Route::post('/login', 'LoginController@login');

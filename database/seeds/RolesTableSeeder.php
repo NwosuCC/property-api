@@ -18,7 +18,7 @@ class RolesTableSeeder extends Seeder
       DB::table('roles')->insert(
         [
           [
-            'name' => 'Admin',
+            'name' => 'Auth',
             'slug' => 'admin',
             'description' => 'In charge',
             'created_at' => Carbon::now(),
