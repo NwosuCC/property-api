@@ -11,17 +11,21 @@
 |
 */
 
+// For post-login redirect
+Route::redirect('/home', '/properties');
+
+// For domain landing
 Route::redirect('/', '/properties');
+
 
 Auth::routes();
 
-// Overrides Auth::routes '/register'. Registration via API only
-Route::get('/register', function (){
-  abort(404);
-});
 
 
 Route::namespace('Auth')->group(function () {
+
+  // Overrides Auth::routes '/register'. Registration via API only
+  Route::get('/register', function (){ abort(404); });
 
   Route::get('/login', 'LoginController@showLoginForm')->name('login');
   Route::post('/login', 'LoginController@login');

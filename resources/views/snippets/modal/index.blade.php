@@ -63,9 +63,9 @@
 </div>
 
 
-<script>
+<script defer>
   const plugIntoModal = (initCallback) => {
-    if(typeof initCallback !== 'function'){
+    if(initCallback && typeof initCallback !== 'function'){
       console.error(`Param 'initCallback' must ba a function`);
       return;
     }
@@ -73,7 +73,13 @@
     let lapse = 0, attempts = 0;
 
     if(window.MFA && typeof window.MFA.init !== 'undefined'){
-      initCallback.call();
+      if(initCallback){
+        initCallback.call();
+      }
+      else if( ! init){
+        window.MFA.init("{{$id}}");
+        init = true;
+      }
     }
     else if(++attempts <= 5){
       // Repeat attempt 5 times, increasing the next wait time by 100
@@ -81,7 +87,7 @@
     }
   };
 
-  plugIntoModal(() => {
-    window.MFA.init("{{$id}}");
-  });
+  let init = false;
+
+  plugIntoModal();
 </script>

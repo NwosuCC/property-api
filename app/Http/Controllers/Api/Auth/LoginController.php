@@ -20,6 +20,6 @@ class LoginController extends Controller
       return response()->json($user, 200);
     }
 
-    return abort(401, "Incorrect username or password");
+    return response()->json("Incorrect username or password", 401);
   }
 }
