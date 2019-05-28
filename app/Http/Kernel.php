@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\Custom\JsonMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -63,6 +64,7 @@ class Kernel extends HttpKernel
         //
         'admin' => \App\Http\Middleware\Custom\Admin::class,
         'role' => \App\Http\Middleware\Custom\CheckRole::class,
+        'return-json' => \App\Http\Middleware\Custom\JsonMiddleware::class,
     ];
 
     /**
@@ -73,6 +75,9 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middlewarePriority = [
+        // Top priority so the JSON transform happens even before auth, etc
+        \App\Http\Middleware\Custom\JsonMiddleware::class,
+        //
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
         \App\Http\Middleware\Authenticate::class,
