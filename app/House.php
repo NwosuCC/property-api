@@ -48,6 +48,9 @@ class House extends Model
   const ACTION_DECLINE = 'decline';
   const ACTION_RELEASE = 'release';
 
+  const SUCCESS_APPROVED = 'House approved';
+  const SUCCESS_DECLINED = 'House declined';
+
 
   protected static function boot() {
     parent::boot();
@@ -99,7 +102,7 @@ class House extends Model
     return null;
   }
 
-  // For House Approval/Decline Modal
+  // For House Approval|Decline|Release Modal
   public function getActionParams(User $user, string $action) {
     switch (strval($action)){
       case 'approve' :

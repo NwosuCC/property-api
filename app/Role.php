@@ -24,6 +24,12 @@ class Role extends Model
     }
 
 
+    public function getAdmin() {
+        $admin_role = $this->filter(self::ADMIN)->with('users')->first();
+        return $admin_role->users->first();
+    }
+
+
     public function users() {
         return $this->belongsToMany(User::class)->withTimestamps();
     }

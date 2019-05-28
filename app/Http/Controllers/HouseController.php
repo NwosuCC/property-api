@@ -126,13 +126,13 @@ class HouseController extends Controller
 
     if($rented = $house->tenants->count()){
       // For Modal Dialog
-      abort(400, House::ERROR_RENTED);
+      [$status, $message] = [400, House::ERROR_RENTED];
     }
     else {
       if($request->{'action'} === House::ACTION_APPROVE){
         // Approve
         $user->tenancies()->attach($house, compact('expires_at'));
-        set_flash('House approved');
+        set_flash($message = House::SUCCESS_APPROVED);
 
         $house->applicants->each(function($user) use($house){
           $user->applications()->detach($house);
@@ -141,12 +141,12 @@ class HouseController extends Controller
       else{
         // Decline
         $user->applications()->detach($house);
-        set_flash('House declined');
+        set_flash($message = House::SUCCESS_DECLINED);
       }
     }
 
     // For Modal Dialog
-    return response()->json(['message' => 'House declined'], 200);
+    return response()->json(['message' => $message], $status ?? 200);
   }
 
 

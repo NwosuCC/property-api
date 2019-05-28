@@ -66,8 +66,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
   Route::name('house.')->group(function () {
 
     Route::get('/properties/applications', 'HouseController@applied')->name('applied');
-    Route::put('/properties/assign/{user}/{house}', 'HouseController@assign')->name('assign')->middleware('return-json');
-    Route::put('/properties/release/{user}/{house}', 'HouseController@release')->name('release')->middleware('return-json');
+    Route::put('/properties/assign/{user}/{house}', 'HouseController@assign')->name('assign');//->middleware('return-json');
+    Route::put('/properties/release/{user}/{house}', 'HouseController@release')->name('release');//->middleware('return-json');
 
     Route::get('/properties/occupied', 'HouseController@rented')->name('rented');
 
