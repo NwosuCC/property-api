@@ -172,7 +172,7 @@ setTimeout(() => {
   /* ------------------------------
    | Form Handler Ajax Setup
    * ------------------------- */
-  $.ajaxSetup({
+  /*$.ajaxSetup({
     beforeSend: function () {
       // MFA.Spinner.show();
     },
@@ -183,7 +183,7 @@ setTimeout(() => {
     complete: function (xhr, status) {
       // MFA.Spinner.hide();
     }
-  });
+  });*/
 
   /* ---------------------------
    | Form Handler Methods
@@ -232,7 +232,7 @@ setTimeout(() => {
 
     let formMethod = formValues['_method'] || form.attr('method');
 
-    $.ajax({
+    /*$.ajax({
       type: formMethod,
       data: formValues ,
       url: actionUrl,
@@ -240,7 +240,20 @@ setTimeout(() => {
         form[0].reset();
         MFA.reload();
       },
-    });
+    });*/
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    };
+
+    axios.post(actionUrl, formValues, {headers: headers})
+      .then((resp) => {
+        console.log('resp data: ', resp.data);
+      })
+      .catch((error) => {
+        console.log('error: ', error);
+      });
   };
 
   /* -------------------------------
