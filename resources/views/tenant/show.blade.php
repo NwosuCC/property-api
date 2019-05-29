@@ -72,6 +72,12 @@
         </div>
       </div>
 
+      <div class="">
+        @if($errors)
+          {{ json_encode($errors->all()) }}
+        @endif
+      </div>
+
       {{-- Assign Modal --}}
       @component('snippets.modal.index', ['id' => 'release', 'method' => 'PUT'])
         <div class="col-12">

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\HouseAssignRequest;
+use App\Http\Requests\HouseActionsRequest;
 use App\User;
 use App\House;
 use App\Category;
@@ -60,11 +60,7 @@ class HouseController extends Controller
 
   public function show(House $house)
   {
-    $house = House::query()
-      ->where('id', $house->id)
-      ->with('tenants')
-      ->with('applicants')
-      ->first();
+    $house = $house->withUserGroups()->first();
 
     return view('house.show', compact('house'));
   }
@@ -86,13 +82,13 @@ class HouseController extends Controller
   {
     $this->authorize('update', $house);
 
-    $house = Category::find( $request->{'category'})->addHouse($request, $house);
+    $updated_house = Category::find($request->{'category'})->addHouse($request, $house);
 
-    [$message, $type] = $house->getChanges() ? ['House updated', ''] : ['No changes made', 'info'];
+    $house->getChanges()
+      ? set_flash('House updated')
+      : set_flash('No changes made', 'info');
 
-    set_flash($message, $type);
-
-    return redirect()->route('house.show', ['house' => $house ]);
+    return redirect()->route('house.show', ['house' => $updated_house ]);
   }
 
 
@@ -116,61 +112,41 @@ class HouseController extends Controller
   }
 
 
-  public function assign(HouseAssignRequest $request, User $user, House $house)
+  public function assign(HouseActionsRequest $request, User $user, House $house)
   {
-    if($request->{'expires_at'}){
-      $expires_at = Carbon::parse($request->{'expires_at'});
-    }
+    $this->authorize('update', $house);
 
-    $house = $house->where('id', $house->id)->with('tenants', 'applicants')->first();
+    if($house = $house->getAssignable()){
 
-    if($rented = $house->tenants->count()){
-      // For Modal Dialog
-      [$status, $message] = [400, House::ERROR_RENTED];
-    }
-    else {
       if($request->{'action'} === House::ACTION_APPROVE){
-        // Approve
-        $user->tenancies()->attach($house, compact('expires_at'));
-        set_flash($message = House::SUCCESS_APPROVED);
 
-        $house->applicants->each(function($user) use($house){
-          $user->applications()->detach($house);
-        });
+        $house->approveFor($user, $request->{'expires_at'});
+        set_flash(House::SUCCESS_APPROVED);
       }
       else{
-        // Decline
-        $user->applications()->detach($house);
-        set_flash($message = House::SUCCESS_DECLINED);
+        $house->declineFor($user);
+        set_flash(House::SUCCESS_DECLINED);
       }
     }
+    else {
+      set_flash($house->errorRented(), 'danger');
+    }
 
-    // For Modal Dialog
-    return response()->json(['message' => $message], $status ?? 200);
+    return redirect()->back();
   }
 
 
-  public function release(Request $request, User $user, House $house)
+  public function release(HouseActionsRequest $request, User $user, House $house)
   {
-    $action = $request->input('action');
-    $valid_action = $action === House::ACTION_RELEASE;
+    $this->authorize('update', $house);
+    dd($request->all(), $user, $house);
 
-    $relation = $user->tenancies()->wherePivot('house_id', $house->id);
-    $house = $relation->first();
-
-    if( ! $valid_action) {
-      set_flash('Invalid Action! Please, try again', 'danger');
-    }
-    else if($not_expired = ! $house->{'is_expired'}){
-      set_flash(House::ERROR_NOT_EXPIRED, 'danger');
-    }
-
-    if($valid_action && empty($not_expired)){
-      // Release
-      $relation->updateExistingPivot($house->id, ['deleted_at' => Carbon::now()]);
-      // Also works: $house->pivot->update(['deleted_at' => Carbon::now()]);
-      set_flash('House released');
-    }
+//    if($house->releaseFrom($user)){
+//      set_flash('House released');
+//    }
+//    else {
+//      set_flash(House::ERROR_NOT_EXPIRED, 'danger');
+//    }
 
     return redirect()->back();
   }

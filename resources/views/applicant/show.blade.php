@@ -67,6 +67,12 @@
         </div>
       </div>
 
+      <div class="">
+        @if($errors)
+          {{ json_encode($errors->all()) }}
+        @endif
+      </div>
+
       {{-- Assign Modal --}}
       @component('snippets.modal.index', ['id' => 'assign', 'method' => 'PUT'])
         <div class="col-12">
@@ -124,7 +130,8 @@
         </div>
 
         @push('modal-buttons')
-          <button type="button" class="modal-submit btn btn-primary px-3" onclick="window.MFA.submit(event)" onmouseenter="TextField.hide()">
+          {{--<button type="button" class="modal-submit btn btn-primary px-3" onclick="window.MFA.submit(event)" onmouseenter="TextField.hide()">--}}
+          <button type="submit" class="modal-submit btn btn-primary px-3" onmouseenter="TextField.hide()">
             <span class="param-action"></span>
           </button>
         @endpush

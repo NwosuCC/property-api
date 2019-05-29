@@ -243,7 +243,7 @@ class HouseAssignTest extends TestCase
     // Should fail
     $response->assertStatus(400);
     $response->assertJsonStructure(['message']);
-    $response->assertSeeText(House::ERROR_RENTED);
+    $response->assertSeeText( $house->errorRented() );
   }
 
 }

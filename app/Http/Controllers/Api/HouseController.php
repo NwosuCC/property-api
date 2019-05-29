@@ -30,7 +30,7 @@ class HouseController extends Controller
     {
       if($house->tenants()->first()){
         return response()->json([
-          'house' => $house->title, 'error' => House::ERROR_RENTED
+          'house' => $house->title, 'error' => $house->errorRented()
         ]);
       }
 

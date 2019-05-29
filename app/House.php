@@ -6,6 +6,7 @@ namespace App;
 use App\Events\HouseSaved;
 use App\Presenters\HouseUrlPresenter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
 
@@ -41,7 +42,7 @@ class House extends Model
     self::STATUS_RENTED => 'Rented',
   ];
 
-  const ERROR_RENTED = 'House is no longer available';
+  const ERROR_RENTED = "House '{house}' is no longer available";
   const ERROR_NOT_EXPIRED = 'House is not yet expired';
 
   const ACTION_APPROVE = 'approve';
@@ -115,7 +116,6 @@ class House extends Model
       default : $route = '';
     }
 
-    
     return json_encode([
       'house' => $this->title,
       'user' => $user->name,
@@ -176,6 +176,14 @@ class House extends Model
     return $query->withCount(['users']);
   }
 
+  /**
+   * Returns one|more house instances with their associated users
+   * @return \Illuminate\Database\Eloquent\Builder
+   */
+  public function withUserGroups(){
+    return $this->where('id', $this->{'id'})->with('tenants', 'applicants');
+  }
+
 
   /*===========================================
    | H O U S E - U S E R   ::   RELATIONS
@@ -195,5 +203,57 @@ class House extends Model
     return $this->users()->wherePivot(...static::whereAvailable());
   }
 
+
+  /*===========================================
+   | H O U S E - U S E R   ::   ACTIONS
+   *---------------------------------------*/
+  /**
+   * Returns the house if it is not yet rented, else, null
+   */
+  public function getAssignable()
+  {
+    /** @var  House $house */
+    $house = $this->withUserGroups()->first();
+
+    $rented = $house->{'tenants'}->count();
+
+    return $rented ? null : $house;
+  }
+
+  public function approveFor(User $user, $expires_at)
+  {
+    $user->tenancies()->attach($this, ['expires_at' => Carbon::parse($expires_at)]);
+
+    $this->{'applicants'}->each(function(User $user){
+      $user->applications()->detach($this);
+    });
+  }
+
+  public function declineFor(User $user)
+  {
+    $user->applications()->detach($this);
+  }
+
+  public function releaseFrom(User $user)
+  {
+//    $relation = $user->tenancies()->wherePivot('house_id', $this->id);
+//    $house = $relation->first();
+//    $relation->updateExistingPivot($house->id, ['deleted_at' => Carbon::now()]);
+
+    if($house = $user->tenancies()->wherePivot('house_id', $this->id)->first()){
+      if( ! $house->{'is_expired'}){
+        return false;
+      }
+
+      $house->pivot->update(['deleted_at' => Carbon::now()]);
+    }
+
+    return true;
+  }
+
+  public function errorRented()
+  {
+    return str_replace('{house}', $this->title, self::ERROR_RENTED);
+  }
 
 }

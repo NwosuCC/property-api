@@ -111,7 +111,7 @@
           //removeFlashDiv();
           setTimeout(function () {
             document.getElementById('flash-message').setAttribute('style', "display:none");
-          }, 3500);
+          }, 5000);
         </script>
     @endif
 
