@@ -129,7 +129,7 @@ class HouseController extends Controller
       }
     }
     else {
-      set_flash($house->errorRented(), 'danger');
+      set_flash($house->getError(), 'danger');
     }
 
     return redirect()->back();
@@ -139,14 +139,10 @@ class HouseController extends Controller
   public function release(HouseActionsRequest $request, User $user, House $house)
   {
     $this->authorize('update', $house);
-    dd($request->all(), $user, $house);
 
-//    if($house->releaseFrom($user)){
-//      set_flash('House released');
-//    }
-//    else {
-//      set_flash(House::ERROR_NOT_EXPIRED, 'danger');
-//    }
+    $house->releaseFrom($user)
+      ? set_flash('House released')
+      : set_flash($house->getError(), 'danger');
 
     return redirect()->back();
   }

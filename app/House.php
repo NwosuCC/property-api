@@ -52,6 +52,7 @@ class House extends Model
   const SUCCESS_APPROVED = 'House approved';
   const SUCCESS_DECLINED = 'House declined';
 
+  protected $error;
 
   protected static function boot() {
     parent::boot();
@@ -213,11 +214,14 @@ class House extends Model
   public function getAssignable()
   {
     /** @var  House $house */
-    $house = $this->withUserGroups()->first();
+    if( ! $house = $this->withUserGroups()->first()){
+      $this->error = $this->errorRented();
+    }
+    else if($rented = $house->{'tenants'}->count()){
+      $this->error = $this->errorRented();
+    }
 
-    $rented = $house->{'tenants'}->count();
-
-    return $rented ? null : $house;
+    return $this->error ? null : $house;
   }
 
   public function approveFor(User $user, $expires_at)
@@ -242,6 +246,7 @@ class House extends Model
 
     if($house = $user->tenancies()->wherePivot('house_id', $this->id)->first()){
       if( ! $house->{'is_expired'}){
+        $this->error = self::ERROR_NOT_EXPIRED;
         return false;
       }
 
@@ -249,6 +254,12 @@ class House extends Model
     }
 
     return true;
+  }
+
+  public function getError()
+  {
+    $error = $this->error;
+    return ($this->error = null) ?: $error;
   }
 
   public function errorRented()
