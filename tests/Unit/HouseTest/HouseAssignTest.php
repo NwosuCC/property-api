@@ -102,9 +102,8 @@ class HouseAssignTest extends TestCase
       ->actingAs($admin, 'web')
       ->json('PUT', $approve_route, $valid_data, $headers);
 
-    $response->assertStatus(200);
-    $response->assertJsonStructure(['message']);
-    $response->assertSeeText(House::SUCCESS_APPROVED );
+    $response->assertStatus(302);
+    $response->assertSessionHas('message', House::SUCCESS_APPROVED.'|success');
   }
 
 
@@ -131,9 +130,9 @@ class HouseAssignTest extends TestCase
       ->actingAs($admin, 'web')
       ->json('PUT', $decline_route, $valid_data, $headers);
 
-    $response->assertStatus(200);
-    $response->assertJsonStructure(['message']);
-    $response->assertSeeText(House::SUCCESS_DECLINED);
+    $response->assertStatus(302);
+    $response->assertRedirect( url()->previous() );
+    $response->assertSessionHas('message', House::SUCCESS_DECLINED.'|success');
   }
 
 
@@ -176,33 +175,27 @@ class HouseAssignTest extends TestCase
       ->actingAs($admin, 'web')
       ->json('PUT', $decline_route, $valid_data, $headers);
 
-    $response_valid->assertStatus(200);
-    $response_valid->assertJsonStructure(['message']);
-    $response_valid->assertSeeText(House::SUCCESS_APPROVED);
+    $response_valid->assertStatus(302);
+    $response_valid->assertSessionHas('message', House::SUCCESS_APPROVED.'|success');
 
     $response_invalid_action = $this
       ->actingAs($admin, 'web')
       ->json('PUT', $decline_route, $action_is_not_approve_or_decline, $headers);
 
     $response_invalid_action->assertStatus(422);
-    $response_invalid_action->assertJsonStructure(['errors']);
-    $response_invalid_action->assertSeeText('action');
+//    $response_valid->assertSessionHasErrors();
 
     $response_empty_expiry = $this
       ->actingAs($admin, 'web')
       ->json('PUT', $decline_route, $expires_at_is_empty, $headers);
 
     $response_empty_expiry->assertStatus(422);
-    $response_empty_expiry->assertJsonStructure(['errors']);
-    $response_empty_expiry->assertSeeText('expires_at');
 
     $response_past_expiry = $this
       ->actingAs($admin, 'web')
       ->json('PUT', $decline_route, $expires_at_is_past, $headers);
 
     $response_past_expiry->assertStatus(422);
-    $response_past_expiry->assertJsonStructure(['errors']);
-    $response_past_expiry->assertSeeText('expires_at');
   }
 
 
@@ -241,9 +234,8 @@ class HouseAssignTest extends TestCase
       ->json('PUT', $approve_route, $valid_data, $headers);
 
     // Should fail
-    $response->assertStatus(400);
-    $response->assertJsonStructure(['message']);
-    $response->assertSeeText( $house->errorRented() );
+    $response->assertStatus(302);
+    $response->assertSessionHas('message', $house->errorRented().'|danger');
   }
 
 }

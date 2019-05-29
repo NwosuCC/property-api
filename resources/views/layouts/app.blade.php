@@ -12,8 +12,8 @@
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
     {{--@stack('actions-scripts')--}}
-    <script src="{{ asset('js/helper-scripts.js') }}"></script>
-    <script src="{{ asset('js/modal-scripts.js') }}"></script>
+    @include('layouts.modal-form-scripts')
+    @include('snippets.modal.modal-scripts')
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">

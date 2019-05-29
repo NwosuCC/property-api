@@ -16,6 +16,6 @@
 {{--
 @if($index === 0)
   @push('actions-scripts')
-  <script src="{{ asset('js/modal-scripts.js') }}" defer></script>
+  <script src="{{ asset('js/modal-scripts.blade.php') }}" defer></script>
   @endpush
 @endif--}}

@@ -80,43 +80,45 @@
 
       {{-- Assign Modal --}}
       @component('snippets.modal.index', ['id' => 'release', 'method' => 'PUT'])
-        <div class="col-12">
-          <div class="mt-3">
-            {{-- Assign Action --}}
-            <input type="hidden" name="action" id="action" />
+        <div class="form-group row no-gutters">
+          <div class="col-12">
+            <div class="mt-3">
+              {{-- Assign Action --}}
+              <input type="hidden" name="action" id="action" />
 
-            {{-- Badge --}}
-            <div class="py-3 px-4 border-left-0 border-right-0" style="background-color: #e6f2ff; border: solid 1px #3c94dd;">
-              <div class="mt-1">
-                <table>
-                  <tbody>
-                  <tr>
-                    <td class="font-weight-bold pr-4">Tenant</td>
-                    <td>
-                      <span class="param-user"></span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="font-weight-bold pr-4">House</td>
-                    <td>
-                      <span class="param-house"></span>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
+              {{-- Badge --}}
+              <div class="py-3 px-4 border-left-0 border-right-0" style="background-color: #e6f2ff; border: solid 1px #3c94dd;">
+                <div class="mt-1">
+                  <table>
+                    <tbody>
+                    <tr>
+                      <td class="font-weight-bold pr-4">Tenant</td>
+                      <td>
+                        <span class="mf-text-user"></span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="font-weight-bold pr-4">House</td>
+                      <td>
+                        <span class="mf-text-house"></span>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
 
-            {{-- Prompt --}}
-            <div class="mt-3 pl-1">
-              <span class="param-action"></span> this property?
+              {{-- Prompt --}}
+              <div class="mt-3 pl-1">
+                <span class="mf-text-action"></span> this property?
+              </div>
             </div>
           </div>
         </div>
 
         @push('modal-buttons')
         <button type="submit" class="btn btn-primary px-3">
-          <span class="param-action"></span>
+          <span class="mf-text-action"></span>
         </button>
         @endpush
       @endcomponent

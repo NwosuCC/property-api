@@ -32,12 +32,14 @@ class Model extends Eloquent
 
     public function getCreateParamsAttribute() {
       return json_encode([
+        'model' => strtolower( class_basename( get_called_class())),
         'route' => $this->route->store,
       ]);
     }
 
     public function getEditParamsAttribute() {
       return json_encode([
+        'model' => strtolower( class_basename( get_called_class())),
         'fields' => $this->only($this->fillable),
         'route' => $this->route->update,
       ]);
@@ -45,6 +47,7 @@ class Model extends Eloquent
 
     public function getDeleteParamsAttribute() {
       return json_encode([
+        'model' => strtolower( class_basename( get_called_class())),
         'fields' => $this->only($this->fillable),
         'route' => $this->route->delete,
       ]);

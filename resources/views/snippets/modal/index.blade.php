@@ -1,6 +1,5 @@
 @php
   // Expected Keys : 'id', 'method'
-  // Modal Actions : Approve, Decline, Release
 
   $modal = ($id) . 'Modal';
   $form  = ($id) . 'Form';
@@ -10,7 +9,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header" style="background-color: #f7f8fa;border-color: #f7f8fa">
-        <h5 class="modal-title py-1 px-3" style="color: #123466" id="exampleModalLabel">
+        <h5 class="modal-title mf-text-title py-1 px-3" style="color: #123466" id="exampleModalLabel">
           {{-- Title --}}
         </h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -38,11 +37,10 @@
 
         <div class="modal-body" style="min-height: 150px;">
           <div class="py-0 px-3">
-            <div class="form-group row no-gutters">
 
+              {{-- Custom Modal Form content --}}
               {{ $slot }}
 
-            </div>
           </div>
         </div>
 
@@ -51,6 +49,7 @@
             Close
           </button>
 
+          {{-- Custom Modal Form action buttons --}}
           @stack('modal-buttons')
         </div>
       </form>
@@ -73,10 +72,13 @@
     let lapse = 0, attempts = 0;
 
     if(window.MFA && typeof window.MFA.init !== 'undefined'){
+      // MFA is now defined
       if(initCallback){
+        // Any other function to run AFTER MFA is loaded
         initCallback.call();
       }
       else if( ! init){
+        // Initialize (once) this Modal component (identified as $id) in MFA
         window.MFA.init("{{$id}}");
         init = true;
       }

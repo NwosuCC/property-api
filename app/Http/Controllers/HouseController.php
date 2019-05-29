@@ -116,7 +116,8 @@ class HouseController extends Controller
   {
     $this->authorize('update', $house);
 
-    if($house = $house->getAssignable()){
+    if($assignable_house = $house->getAssignable()){
+      $house = $assignable_house;
 
       if($request->{'action'} === House::ACTION_APPROVE){
 

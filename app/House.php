@@ -258,8 +258,9 @@ class House extends Model
 
   public function getError()
   {
-    $error = $this->error;
-    return ($this->error = null) ?: $error;
+//    $error = $this->error;
+//    return ($this->error = null) ?: $error;
+    return $this->error;
   }
 
   public function errorRented()
