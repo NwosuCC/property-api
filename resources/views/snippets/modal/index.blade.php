@@ -35,6 +35,9 @@
           {{ method_field( $method ) }}
         @endisset
 
+        {{-- Modal Id :: for Modal launch after page reload --}}
+        <input type="hidden" name="_mfa" id="_mfa" value="" />
+
         <div class="modal-body" style="min-height: 150px;">
           <div class="py-0 px-3">
 
@@ -61,26 +64,25 @@
   {{--@include('snippets.spinner.index')--}}
 </div>
 
-
 <script defer>
+  // Must be outside the plugIntoModal() loop it controls
+  let lapse = 0, attempts = 0;
+
   const plugIntoModal = (initCallback) => {
     if(initCallback && typeof initCallback !== 'function'){
       console.error(`Param 'initCallback' must ba a function`);
       return;
     }
 
-    let lapse = 0, attempts = 0;
-
-    if(window.MFA && typeof window.MFA.init !== 'undefined'){
+    if(MFA && typeof MFA.init !== 'undefined'){
       // MFA is now defined
       if(initCallback){
         // Any other function to run AFTER MFA is loaded
         initCallback.call();
       }
-      else if( ! init){
+      else {
         // Initialize (once) this Modal component (identified as $id) in MFA
-        window.MFA.init("{{$id}}");
-        init = true;
+        MFA.init("{{$id}}");
       }
     }
     else if(++attempts <= 5){
@@ -88,8 +90,6 @@
       setTimeout(() => { plugIntoModal(initCallback); }, lapse += 100);
     }
   };
-
-  let init = false;
 
   plugIntoModal();
 </script>

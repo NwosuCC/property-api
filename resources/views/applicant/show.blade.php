@@ -67,12 +67,6 @@
         </div>
       </div>
 
-      <div class="">
-        @if($errors)
-          {{ json_encode($errors->all()) }}
-        @endif
-      </div>
-
       {{-- Assign Modal --}}
       @component('snippets.modal.index', ['id' => 'assign', 'method' => 'PUT'])
         <div class="form-group row no-gutters">
@@ -106,16 +100,17 @@
                     <tr class="td_date">
                       <td class="font-weight-bold pr-3">Expires</td>
                       <td>
-                      <span class="expiry-label" onclick="TextField.show()">
-                        {{-- [ Click to edit ] --}}
-                      </span>
-                        <input type="date" name="expires_at" id="expires_at" class="expiry-field form-control form-control-sm"
-                               title="Expiry Date" onblur="TextField.hide()" style="display: none;" />
-                        <span class="invalid-feedback{{ $errors->has('expires_at') ? '' : ' d-none' }}" role="alert">
-                          <strong>{{ $errors->first('expires_at') }}</strong>
-                      </span>
-                      </td>
-                      <td class="expiry-value">
+                        <span class="expiry-label" onclick="TextField.show()">
+                          {{-- [ Click to edit ] --}}
+                        </span>
+                        <span class="expiry-field" {{--style="display: none;"--}}>
+                          <input type="date" name="expires_at" id="expires_at" title="Expiry Date"
+                                 class="form-control form-control{{ $errors->has('expires_at') ? ' is-invalid' : '' }} form-control-sm"
+                                 value="{{ old('expires_at') }}" onblur="TextField.hide()" />
+                          {{--<span class="invalid-feedback{{ $errors->has('expires_at') ? '' : ' d-none' }}" role="alert">
+                            <strong>{{ $errors->first('expires_at') }}</strong>
+                          </span>--}}
+                        </span>
                       </td>
                     </tr>
                     </tbody>
@@ -133,7 +128,7 @@
 
         @push('modal-buttons')
           {{--<button type="button" class="modal-submit btn btn-primary px-3" onclick="window.MFA.submit(event)" onmouseenter="TextField.hide()">--}}
-          <button type="submit" class="modal-submit btn btn-primary px-3" onmouseenter="TextField.hide()">
+          <button type="submit" class="modal-submit btn btn-primary px-3" {{--onmouseenter="TextField.hide()"--}}>
             <span class="mf-text-action"></span>
           </button>
         @endpush
@@ -141,21 +136,25 @@
 
       <script>
         const TextField = (() => {
-          let actionObj, tdTextObj, labelsObj, valuesObj;
+          let actionObj, tdTextObj, labelsObj, valuesObj, valuesTxt;
 
           setTimeout(() => {
             actionObj = () => $('#action');
             tdTextObj = () => $('.td_date');
             labelsObj = () => $('.expiry-label');
             valuesObj = () => $('.expiry-field');
+            valuesTxt = () => $('#expires_at');
 
-            // Has to be plugged into Modal due to reference to window.MFA.UI below
+            // Has to be plugged into Modal due to reference to MFA.UI below
             if(typeof plugIntoModal === 'function'){
               plugIntoModal(() => {
+                // Add extra options
+                MFA.setOptions({ listErrors: true });
+
                 $(document)
                   .on({
                     mousedown: function (e) {
-                      if(e.target.id !== valuesObj().attr('id')){
+                      if(e.target.id !== valuesTxt().attr('id')){
                         TextField.hide();
                       }
                     }
@@ -165,11 +164,17 @@
                       TextField.setLabel() && TextField.resetText();
                       (actionObj().val() === 'approve') ? tdTextObj().show() : tdTextObj().hide();
                     }
-                  }, window.MFA.UI)
+                  }, MFA.UI)
+                  .on({
+                    'shown.bs.modal': function () {
+                      if('<?= in_array('expires_at', old()) ?>'){
+                        TextField.show();
+                      }
+                    }
+                  }, MFA.UI)
                 ;
               });
             }
-
           }, 300);
 
           return {
@@ -177,13 +182,13 @@
               labelsObj().text('[ Click to edit ]');
             },
             resetText: () => {
-              valuesObj().val('').change();
+              valuesTxt().val('').change();
             },
             show: () => {
               labelsObj().hide() && valuesObj().show();
             },
             hide: () => {
-              valuesObj().val() && labelsObj().text( valuesObj().val() );
+              valuesTxt().val() && labelsObj().text( valuesTxt().val() );
               labelsObj().show() && valuesObj().hide();
             }
           };

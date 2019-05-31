@@ -11,9 +11,8 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/modal-scripts.js') }}"></script>
     {{--@stack('actions-scripts')--}}
-    @include('layouts.modal-form-scripts')
-    @include('snippets.modal.modal-scripts')
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -99,9 +98,6 @@
         </div>
     </nav>
 
-  <div>
-  </div>
-
   {{-- Flash Message --}}
     @if($flash = get_flash())
         <div id="flash-message" class="alert alert-{{$flash['type']?:'success'}}" role="alert" style="position: fixed; top: 3px; right:15px; min-width: 300px; border-radius: 1px;">
@@ -115,6 +111,24 @@
         </script>
     @endif
 
+    {{-- Grab Errors into JS for Modal Form (MF) Plugin :: Possible only in blade.php file --}}
+    @if($errors)
+      <script>
+        /* Called from modal-scripts.js MF.ext */
+        const MFExt = (() => {
+          return {
+            getPHPErrors: () => {
+              return'@php if($errors_str = json_encode( $errors->toArray() )) echo $errors_str; @endphp';
+            },
+            getFormOld: () => {
+              return'@php if($old_str = json_encode( old() )) echo $old_str; @endphp';
+            }
+          };
+        })();
+      </script>
+    @endif
+
+    {{-- Finally, render Page --}}
     <main class="py-4">
         @yield('content')
     </main>

@@ -12,7 +12,7 @@
                             </div>
                             <div class="ml-auto">
                                 <small>
-                                    <a href="#" onclick="MFA.create({{$Category->createParams}})" class="nav-link p-0" data-toggle="modal">
+                                    <a href="#" id="_mfa_c_1" onclick="MFA.create({{$Category->createParams}})" class="nav-link p-0" data-toggle="modal">
                                         {{ __('Add a Category') }}
                                     </a>
                                 </small>
@@ -35,39 +35,20 @@
                                 <tbody>
                                 @foreach($categories as $i => $category)
                                     <tr>
-                                        <td>{{ $i + 1 }}</td>
+                                        <td>{{ $loop->iteration }}</td>
                                         <td>{{ $category->name  }}</td>
                                         <td>{{ $category->description  }}</td>
                                         <td class="text-center">
                                           {{ __($category->houses_count) }}
                                         </td>
                                         <td class="px-0 text-center">
-                                            {{--<i class="fa fa-edit py-0 px-2 btn btn-light" onclick="MF.edit({{$category->editParams}})"></i>--}}
-                                            {{--<i class="fa fa-trash py-0 px-2 btn btn-light" onclick="MF.trash({{$category->deleteParams}})"></i>--}}
-                                          <i onclick="MFA.edit({{$category->editParams}})" class="fa fa-edit py-0 px-2 btn btn-light"></i>
-                                          <i onclick="MFA.trash({{$category->deleteParams}})" class="fa fa-trash py-0 px-2 btn btn-light"></i>
+                                          <i id="_mfa_e_{{$loop->iteration}}" onclick="MFA.edit({{$category->editParams}})" class="fa fa-edit py-0 px-2 btn btn-light"></i>
+                                          <i id="_mfa_d_{{$loop->iteration}}" onclick="MFA.trash({{$category->deleteParams}})" class="fa fa-trash py-0 px-2 btn btn-light"></i>
                                         </td>
                                     </tr>
                                 @endforeach
                                 </tbody>
                             </table>
-                            {{-- Script function edit() --}}
-                            {{--<script>
-                              let MF = {};
-                              setTimeout(() => {
-                                MF = ModalForm.init({
-                                  name: 'Category',
-                                  fields: ['name', 'description'],
-                                  titleField: 'name',
-                                  actions: {
-                                    create: ['categoryForm', 'addCategoryModal'],
-                                    edit: ['categoryForm', 'addCategoryModal'],
-                                    trash: ['deleteForm', 'deleteModal']
-                                  },
-                                  deleteInfo: 'All Houses under this category will also be deleted',
-                                });
-                              }, 300);
-                            </script>--}}
                         </div>
                     </div>
                 </div>
@@ -99,18 +80,41 @@
           </div>
 
           {{-- Delete Section --}}
-          <div class="mf-section mf-section-delete pt-3" style="display: none;">
+          <div class="mf-section mf-section-delete pt-3 " style="display: none;">
             <div class="form-group row">
-              <div class="col-1 pl-0">
-                <i class="fa fa-exclamation-triangle fa-2x align-self-center" style="color: indianred;"></i>
-              </div>
-              <div class="col-11 pl-4">
-                <div class="mf-text-delete-info">
-                  {{-- Delete Info --}}
+              {{-- Blue Band --}}
+              @component('snippets.light-blue-band')
+                <div class="col-12 px-0 mt-1">
+                  <table>
+                    <tbody>
+                    <tr>
+                      <td class="pr-3 text-right align-text-top">
+                        {{-- Model Label --}}
+                        <span class="mf-text-model-label"></span>
+                      </td>
+                      <td class="font-weight-bold" style="padding-top: 2px;">
+                        {{-- Model Name --}}
+                        <span class="mf-text-model-name"></span>
+                      </td>
+                    </tr>
+                    <tr style="font-size: 13px;">
+                      <td class="pr-3 text-right align-text-top">
+                        {{-- Warn Icon --}}
+                        <a class="mf-text-cascade-icon fa fa-warning text-danger"></a>
+                      </td>
+                      <td>
+                        {{-- Cascade Info --}}
+                        <span class="mf-text-cascade-info"></span>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
                 </div>
-                <div>'
-                  Delete <span class="mf-text-delete-model"></span> "<b class="mf-text-delete-model-title"></b>" ?
-                </div>
+              @endcomponent
+
+              {{-- Prompt --}}
+              <div class="mt-3 pl-1">
+                <span class="mf-text-action"></span> this <span class="mf-text-model-label"></span>?
               </div>
             </div>
           </div>

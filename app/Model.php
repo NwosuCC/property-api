@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Presenters\ModelUrlPresenter;
+use Illuminate\Support\Str;
 
 class Model extends Eloquent
 {
@@ -30,26 +31,36 @@ class Model extends Eloquent
       return new ModelUrlPresenter($this);
     }
 
+    public function getModelName() {
+      return strtolower( class_basename( get_called_class()));
+    }
+
     public function getCreateParamsAttribute() {
       return json_encode([
-        'model' => strtolower( class_basename( get_called_class())),
+        'model' => $this->getModelName(),
         'route' => $this->route->store,
       ]);
     }
 
     public function getEditParamsAttribute() {
       return json_encode([
-        'model' => strtolower( class_basename( get_called_class())),
+        'model' => $this->getModelName(),
         'fields' => $this->only($this->fillable),
         'route' => $this->route->update,
       ]);
     }
 
     public function getDeleteParamsAttribute() {
+      // function 'getCascade()' defined in a model that has sub-model e.g Category => House
+      if(method_exists($this, 'getCascade')){
+        $cascade = Str::plural( $this->getCascade() );
+      }
+
       return json_encode([
-        'model' => strtolower( class_basename( get_called_class())),
+        'model' => $this->getModelName(),
         'fields' => $this->only($this->fillable),
         'route' => $this->route->delete,
+        'cascade' => $cascade ?? ''
       ]);
     }
 

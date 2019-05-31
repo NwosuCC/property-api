@@ -17,6 +17,12 @@ class Category extends Model
     }
 
 
+    // Specifies the model that will cascade on DB update|delete
+    public function getCascade() {
+        return 'House';
+    }
+
+
     public function user() {
         return $this->belongsTo(User::class);
     }
