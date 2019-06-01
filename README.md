@@ -1,4 +1,4 @@
-# Property - API
+# Property - API  [![Build Status](https://travis-ci.org/NwosuCC/api-ccountries.svg?branch=master)](https://travis-ci.org/NwosuCC/property-api)
 
 ## Description
 A simple tool to manage and keep track of property. Like most web services, it consists of two major parts:
