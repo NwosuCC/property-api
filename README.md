@@ -26,3 +26,16 @@ A simple tool to manage and keep track of property. Like most web services, it c
     ~~~
 
     At this point, the app is pretty ready to run
+    
+### Testing
+The project includes a few Unit tests which require a separate test database to run on.
+The included phpunit.xml specifies a default name 'properties_testing' for the test database. You can change this to your preferred database.
+  ~~~
+  <php>
+      // ...
+      <env name="DB_DATABASE" value="countries_testing"/>
+  </php>
+  ~~~
+
+### API Documentation
+The API for interacting with the app is published [here](https://documenter.getpostman.com/view/4155534/S1TVXdXf)
