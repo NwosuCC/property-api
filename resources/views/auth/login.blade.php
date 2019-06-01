@@ -76,6 +76,15 @@
                     </form>
                 </div>
             </div>
+
+
+          {{-- API Doc Url--}}
+          <div class="row my-5">
+            <span class="pr-3">API Doc</span>
+            <a href="https://documenter.getpostman.com/view/4155534/S1TVXdXf" target="_blank">
+              https://documenter.getpostman.com/view/4155534/S1TVXdXf
+            </a>
+          </div>
         </div>
     </div>
 </div>
