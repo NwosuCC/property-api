@@ -12,7 +12,7 @@
 */
 
 Route::any('/', function () {
-  return redirect('/api/houses');
+  return redirect('/api/available-houses');
 });
 
 
