@@ -77,7 +77,6 @@
                 </div>
             </div>
 
-
           {{-- API Doc Url--}}
           <div class="row my-5">
             <span class="pr-3">API Doc</span>
